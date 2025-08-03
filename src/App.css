@@ -1,0 +1,10 @@
+:root {
+  --primary-color: #a1d1da;
+  --primary-hover: #8fc3cc;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: #fdfdfd;
+}
