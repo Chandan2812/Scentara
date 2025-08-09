@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ShoppingBag, User, MapPin, Mail, Menu, X } from "lucide-react";
+import { ShoppingBag, User, MapPin, Mail, Menu, X, Heart } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import "../App.css";
 import logo from "../assets/scentara.png";
@@ -60,31 +60,25 @@ export default function Navbar() {
         {/* Desktop Nav Links */}
         <ul className="hidden md:flex items-center space-x-10 text-gray-700 font-medium">
           <li className="hover:text-[var(--primary-color)] transition cursor-pointer">
-            Home
+            <a href="/">Home</a>
           </li>
           <li className="relative group cursor-pointer hover:text-[var(--primary-color)] transition">
-            Shop
-            <ul className="absolute hidden group-hover:block bg-white shadow-lg rounded-md  py-2 w-44 text-gray-600">
-              {["Men", "Women", "Unisex", "Gift Sets"].map((item) => (
-                <li
-                  key={item}
-                  className="px-4 py-2 hover:bg-[var(--primary-color)] hover:text-white transition"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <a href="/shop">Shop</a>
           </li>
           <li className="hover:text-[var(--primary-color)] transition cursor-pointer">
-            About
+            <a href="/about">About</a>
           </li>
           <li className="hover:text-[var(--primary-color)] transition cursor-pointer">
-            Contact
+            <a href="/contact">Contact</a>
           </li>
         </ul>
 
         {/* Right - User & Cart + Mobile Menu Button */}
         <div className="flex items-center space-x-6">
+          <Heart
+            className="cursor-pointer hover:text-[var(--primary-color)] transition"
+            size={22}
+          />
           <User
             className="cursor-pointer hover:text-[var(--primary-color)] transition"
             size={22}
@@ -122,16 +116,25 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white shadow-md w-full flex flex-col items-center py-6 space-y-4 text-gray-700 font-medium animate-slide-down">
-          <a href="#" className="hover:text-[var(--primary-color)] transition">
+          <a href="/" className="hover:text-[var(--primary-color)] transition">
             Home
           </a>
-          <a href="#" className="hover:text-[var(--primary-color)] transition">
+          <a
+            href="/shop"
+            className="hover:text-[var(--primary-color)] transition"
+          >
             Shop
           </a>
-          <a href="#" className="hover:text-[var(--primary-color)] transition">
+          <a
+            href="/about"
+            className="hover:text-[var(--primary-color)] transition"
+          >
             About
           </a>
-          <a href="#" className="hover:text-[var(--primary-color)] transition">
+          <a
+            href="/contact"
+            className="hover:text-[var(--primary-color)] transition"
+          >
             Contact
           </a>
         </div>
