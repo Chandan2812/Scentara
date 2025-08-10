@@ -210,11 +210,7 @@ const Contact = () => {
         </div>
 
         {/* Optional Map */}
-        <div
-          className="max-w-6xl mx-auto px-6 md:px-12 pb-20"
-          data-aos="fade-up"
-          data-aos-delay="600"
-        >
+        <div data-aos="fade-up" data-aos-delay="600">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d7005.2999423426645!2d77.0254439!3d28.610275800000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1754766476938!5m2!1sen!2sin"
             width="100%"
