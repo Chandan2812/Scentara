@@ -1,5 +1,15 @@
-import { useState } from "react";
-import { ShoppingBag, User, MapPin, Mail, Menu, X, Heart } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  ShoppingBag,
+  User,
+  MapPin,
+  Mail,
+  Menu,
+  X,
+  Heart,
+  LogOut,
+  UserCircle,
+} from "lucide-react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import "../App.css";
 import logo from "../assets/scentara.png";
@@ -7,6 +17,22 @@ import logo from "../assets/scentara.png";
 export default function Navbar() {
   const [cartCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/"; // redirect to home
+  };
 
   return (
     <header className="w-full fixed top-0 left-0 z-50 font-body">
@@ -62,7 +88,7 @@ export default function Navbar() {
           <li className="hover:text-[var(--primary-color)] transition cursor-pointer">
             <a href="/">Home</a>
           </li>
-          <li className="relative group cursor-pointer hover:text-[var(--primary-color)] transition">
+          <li className="hover:text-[var(--primary-color)] transition cursor-pointer">
             <a href="/shop">Shop</a>
           </li>
           <li className="hover:text-[var(--primary-color)] transition cursor-pointer">
@@ -74,15 +100,75 @@ export default function Navbar() {
         </ul>
 
         {/* Right - User & Cart + Mobile Menu Button */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-6 relative">
+          {/* User Dropdown */}
+          <div className="relative">
+            <button
+              className="flex items-center space-x-2 cursor-pointer"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              {user ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--primary-color)] text-white font-semibold">
+                    {user.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                  <span className="hidden md:inline text-gray-700">
+                    Hi, {user.name?.split(" ")[0]}
+                  </span>
+                </div>
+              ) : (
+                <User
+                  className="hover:text-[var(--primary-color)] transition"
+                  size={22}
+                />
+              )}
+            </button>
+
+            {/* Dropdown Menu */}
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg py-2 z-50">
+                {user ? (
+                  <>
+                    <a
+                      href="/profile"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <UserCircle size={16} className="mr-2" /> Profile
+                    </a>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <LogOut size={16} className="mr-2" /> Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a
+                      href="/login"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Login
+                    </a>
+                    <a
+                      href="/register"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Register
+                    </a>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Wishlist */}
           <Heart
             className="cursor-pointer hover:text-[var(--primary-color)] transition"
             size={22}
           />
-          <User
-            className="cursor-pointer hover:text-[var(--primary-color)] transition"
-            size={22}
-          />
+
+          {/* Cart */}
           <div className="relative cursor-pointer">
             <ShoppingBag
               className="hover:text-[var(--primary-color)] transition"

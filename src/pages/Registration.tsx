@@ -2,26 +2,64 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import bgImage from "../assets/home2-banner-1-2.jpg"; // background image
+import bgImage from "../assets/home2-banner-1-2.jpg";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner"; // ✅ import toast
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      return toast.error("❌ Passwords do not match!");
+    }
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${baseURL}/user/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      toast.success(`🎉 ${res.data.msg || "Registered successfully!"}`);
+
+      setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+
+      // redirect to login after short delay
+      setTimeout(() => navigate("/login"), 1500);
+    } catch (err: any) {
+      toast.error(err.response?.data?.msg || "Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
       <Navbar />
-
-      {/* Main content */}
       <div
         className="flex flex-1 bg-cover bg-center relative pt-28"
         style={{ backgroundImage: `url(${bgImage})` }}
       >
-        {/* Left Form Section */}
         <div className="relative z-10 w-full lg:w-1/2 flex items-center p-10">
           <div className="w-full max-w-md ml-auto">
-            {/* Welcome Text */}
             <h1 className="text-7xl text-[var(--primary-color)] mb-2 font-brand">
               Join Us
             </h1>
@@ -29,31 +67,42 @@ const Register = () => {
               Create your account and start exploring our exclusive collection.
             </p>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {/* Name */}
-              <div>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  className="w-full bg-transparent border-b border-gray-400 focus:border-[var(--primary-color)] focus:outline-none py-2"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full bg-transparent border-b border-gray-400 focus:border-[var(--primary-color)] focus:outline-none py-2"
+                required
+              />
 
               {/* Email */}
-              <div>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full bg-transparent border-b border-gray-400 focus:border-[var(--primary-color)] focus:outline-none py-2"
-                />
-              </div>
+              <input
+                type="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className="w-full bg-transparent border-b border-gray-400 focus:border-[var(--primary-color)] focus:outline-none py-2"
+                required
+              />
 
               {/* Password */}
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="w-full bg-transparent border-b border-gray-400 focus:border-[var(--primary-color)] focus:outline-none py-2"
+                  required
                 />
                 <button
                   type="button"
@@ -69,7 +118,15 @@ const Register = () => {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   className="w-full bg-transparent border-b border-gray-400 focus:border-[var(--primary-color)] focus:outline-none py-2"
+                  required
                 />
                 <button
                   type="button"
@@ -87,9 +144,10 @@ const Register = () => {
               {/* Register Button */}
               <button
                 type="submit"
-                className="w-full py-3 rounded-lg bg-[var(--primary-color)] text-white font-semibold hover:opacity-90 transition"
+                disabled={loading}
+                className="w-full py-3 rounded-lg bg-[var(--primary-color)] text-white font-semibold hover:opacity-90 transition disabled:opacity-50"
               >
-                Register
+                {loading ? "Registering..." : "Register"}
               </button>
             </form>
 
@@ -102,11 +160,9 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Right Side - Empty but showing background */}
+        {/* Right Side */}
         <div className="hidden lg:block lg:w-1/2"></div>
       </div>
-
-      {/* Footer */}
       <Footer />
     </div>
   );
